@@ -101,3 +101,27 @@ def run_translation(text, target_code):
         "target": language_name(target_code),
         "translated": translated,
     }
+
+# Pipeline sửa lỗi chính tả
+def run_spellcheck(text):
+    raw = text.strip()
+    if len(raw) < MIN_INPUT_LENGTH:
+        return {"ok": False, "error": f"Nhập tối thiểu {MIN_INPUT_LENGTH} ký tự."}
+
+    code = detect_language(raw)
+    if code is None:
+        return {"ok": False, "error": "Không nhận diện được ngôn ngữ."}
+
+    if code not in SPELL_LANGS:
+        return {
+            "ok": False,
+            "error": f"pyspellchecker chưa hỗ trợ {language_name(code)} ({code}).",
+        }
+
+    fixed, changed = fix_typos(raw, code)
+    return {
+        "ok": True,
+        "language": language_name(code),
+        "fixed": fixed,
+        "changed": changed,
+    }

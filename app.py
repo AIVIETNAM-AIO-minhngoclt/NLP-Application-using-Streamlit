@@ -35,3 +35,22 @@ EXAMPLES_S = [
     "Definately a great oppurtunity.",
     "Je voudraiis allerr au marchee.",
 ]
+
+# Lấy từ điển đúng ngôn ngữ
+@st.cache_resource(show_spinner=False)
+def get_spellchecker(code):
+    return SpellChecker(language=code)
+
+# Hiển thị tên ngôn ngữ cho người dùng
+def language_name(code):
+    try:
+        return langcodes.Language.get(code).display_name()
+    except Exception:
+        return code or "Unknown"
+    
+# Nhận diện ngôn ngữ trước khi dịch
+def detect_language(raw):
+    try:
+        return detect(raw)
+    except LangDetectException:
+        return None
